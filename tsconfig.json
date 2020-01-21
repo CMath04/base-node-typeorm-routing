@@ -1,0 +1,25 @@
+{
+  "compileOnSave": false,
+  "buildOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist/server",
+    "sourceMap": true,
+    "inlineSources": true,
+    "module": "commonjs",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "declaration": false,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "target": "es5",
+    "paths": {
+      "*": ["node_modules/*"]
+    },
+    "lib": ["es2017", "dom"],
+    "typeRoots": ["node_modules/@types"]
+  },
+  "include": ["src/**/*"]
+}
