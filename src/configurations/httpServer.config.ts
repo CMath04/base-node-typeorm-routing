@@ -1,4 +1,5 @@
-import { createExpressServer } from 'routing-controllers';
+import { createExpressServer, useContainer } from 'routing-controllers';
+import { Container } from 'typedi'
 import { Express, static as staticMw } from 'express';
 import { logger } from './logger.config';
 import { PORT } from './env.config';
@@ -6,6 +7,7 @@ import { PORT } from './env.config';
 export async function start() {
   try {
     logger.info('Starting http server');
+    useContainer(Container);
     const app = createExpressServer({
       routePrefix: '/api',
       controllers: [__dirname + '/../controllers/*.controller.js'],

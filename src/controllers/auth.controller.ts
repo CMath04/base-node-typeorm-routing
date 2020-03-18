@@ -1,13 +1,14 @@
 import { Get, JsonController } from 'routing-controllers';
+import { Inject } from 'typedi';
 import { UserService } from "../services";
 
 @JsonController('/auth')
 export class AuthController {
 
+  @Inject()
   private userService: UserService;
 
   constructor() {
-    this.userService = new UserService();
   }
 
   @Get('/register')

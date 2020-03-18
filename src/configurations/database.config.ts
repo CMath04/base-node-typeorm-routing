@@ -1,4 +1,5 @@
-import { ConnectionOptions, getConnectionManager } from 'typeorm';
+import { ConnectionOptions, getConnectionManager, useContainer } from 'typeorm';
+import { Container } from 'typedi';
 import { logger, TypeOrmLogger } from './logger.config';
 import * as EnvConfig from './env.config';
 import { DBTypes } from './constants.config';
@@ -6,6 +7,7 @@ import { DBTypes } from './constants.config';
 export async function connect() {
   try {
     logDbConfig();
+    useContainer(Container);
     const connection = getConnectionManager().create(getOptions());
     await connection.connect();
   } catch (err) {
