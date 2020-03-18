@@ -1,5 +1,8 @@
-import { DBTypes, Env, LogLevels } from './constants.config';
 import { resolve } from 'path';
+import { config } from 'dotenv';
+import { DBTypes, Env, LogLevels } from './constants.config';
+
+config({ path: resolve(__dirname, '../../..', '.env') });
 
 export const NODE_ENV: Env = (process.env.NODE_ENV as Env) || Env.dev;
 export const DATA_DIR: string = resolve(process.env.DATA_DIR || __dirname + '/../../dataDir');

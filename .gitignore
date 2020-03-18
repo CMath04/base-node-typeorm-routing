@@ -42,9 +42,9 @@ speed-measure-plugin*.json
 npm-debug.log
 yarn-error.log
 testem.log
-/typings
+package-lock.json
+.env
 
 # System Files
 .DS_Store
 Thumbs.db
-package-lock.json
