@@ -1,7 +1,7 @@
 import { ConnectionOptions, getConnectionManager } from 'typeorm';
 import { logger, TypeOrmLogger } from './logger.config';
 import * as EnvConfig from './env.config';
-import { DBTypes, Env } from '../typing/enums';
+import { DBTypes } from './constants.config';
 
 export async function connect() {
   try {

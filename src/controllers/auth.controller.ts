@@ -1,16 +1,21 @@
-import { JsonController, Post, Body } from 'routing-controllers';
-import { User } from '../entities/user.entity';
-import { logger } from '../configurations/logger.config';
+import { Get, JsonController } from 'routing-controllers';
+import { UserService } from "../services";
 
-@JsonController()
+@JsonController('/auth')
 export class AuthController {
-  @Post('/login')
-  login() {}
 
-  @Post('/register')
-  register(@Body({ validate: false }) user: User) {
-    logger.info(user.id.toLocaleString());
-    logger.info(user.email);
-    logger.info(user.password);
+  private userService: UserService;
+
+  constructor() {
+    this.userService = new UserService();
+  }
+
+  @Get('/register')
+  register() {
+    return this.userService.add({
+      id: undefined,
+      email: 'chaussier.mathieu@gmail.com',
+      password: 'password',
+    })
   }
 }

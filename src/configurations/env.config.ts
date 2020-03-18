@@ -1,4 +1,4 @@
-import { DBTypes, Env, LogLevels } from '../typing/enums';
+import { DBTypes, Env, LogLevels } from './constants.config';
 import { resolve } from 'path';
 
 export const NODE_ENV: Env = (process.env.NODE_ENV as Env) || Env.dev;

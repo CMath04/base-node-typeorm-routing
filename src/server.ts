@@ -1,8 +1,6 @@
-import { NODE_ENV, DATA_DIR } from './configurations/env.config';
 import { install as installSourceMapSupport } from 'source-map-support';
-import { logger } from './configurations/logger.config';
-import * as database from './configurations/database.config';
-import * as httpServer from './configurations/httpServer.config';
+import "reflect-metadata";
+import { connect as connectDb, DATA_DIR, logger, NODE_ENV, start as startHttpServer } from './configurations';
 
 installSourceMapSupport();
 
@@ -23,8 +21,8 @@ process.on('SIGINT', () => {
 async function start() {
   logger.info(`Starting server - mode ${NODE_ENV}`);
   logger.info(`Data directory: ${DATA_DIR}`);
-  await database.connect();
-  await httpServer.start();
+  await connectDb();
+  await startHttpServer();
 }
 
 start()

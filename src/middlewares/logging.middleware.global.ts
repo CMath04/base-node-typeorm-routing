@@ -1,6 +1,6 @@
-import { Middleware, ExpressMiddlewareInterface } from 'routing-controllers';
-import { Request, Response, NextFunction } from 'express';
-import { logger } from '../configurations/logger.config';
+import { ExpressMiddlewareInterface, Middleware } from 'routing-controllers';
+import { NextFunction, Request, Response } from 'express';
+import { logger } from '../configurations';
 
 @Middleware({ type: 'before' })
 export class LoggingMiddlewareGlobal implements ExpressMiddlewareInterface {

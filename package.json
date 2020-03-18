@@ -2,11 +2,11 @@
   "name": "base-node-typeorm-routing",
   "version": "0.0.0",
   "description": "",
-  "main": "dist/server/server.js",
+  "main": "dist/build/server.js",
   "scripts": {
-    "build": "rm ./dist/server -rf && tsc",
+    "build": "rimraf ./dist/build -rf && tsc",
     "start": "node --inspect=5858 .",
-    "start:prod": "cross-env NODE_ENV=prod node --inspect=5858 .",
+    "start:prod": "cross-env NODE_ENV=prod node .",
     "watch": "nodemon",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -36,6 +36,7 @@
     "@types/source-map-support": "^0.5.1",
     "cross-env": "^6.0.3",
     "nodemon": "^2.0.2",
+    "rimraf": "^3.0.2",
     "typescript": "^3.7.5"
   },
   "dependencies": {

@@ -1,6 +1,6 @@
-import { Middleware, ExpressErrorMiddlewareInterface } from 'routing-controllers';
-import { Request, Response, NextFunction } from 'express';
-import { logger } from '../configurations/logger.config';
+import { ExpressErrorMiddlewareInterface, Middleware } from 'routing-controllers';
+import { NextFunction, Request, Response } from 'express';
+import { logger } from '../configurations';
 
 @Middleware({ type: 'after' })
 export class ErrorHandler implements ExpressErrorMiddlewareInterface {

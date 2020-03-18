@@ -1,8 +1,8 @@
-import { createLogger, LoggerOptions, transports, format } from 'winston';
-const { combine, errors, timestamp, printf, json, colorize } = format;
+import { createLogger, format, LoggerOptions, transports } from 'winston';
 import { Logger, QueryRunner } from 'typeorm';
 import { DATA_DIR, LOG_LEVEL } from './env.config';
-import { LogLevels } from '../typing/enums';
+
+const { combine, errors, timestamp, printf, colorize } = format;
 
 const customFormat = printf(info => {
   const log = `${info.timestamp} [${info.level.toUpperCase()}] ${info.message}`;
@@ -14,7 +14,6 @@ const options: LoggerOptions = {
   format: combine(errors({ stack: true }), timestamp()),
   transports: [
     new transports.File({ filename: DATA_DIR + '/logs/server.log', maxsize: 10000, format: customFormat }),
-    new transports.File({ filename: DATA_DIR + '/logs/server.json', maxsize: 10000, format: json(), level: LogLevels.silly }),
     new transports.Console({ format: combine(customFormat, colorize({ all: true })) }),
   ],
 };
