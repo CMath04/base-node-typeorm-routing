@@ -22,9 +22,5 @@ export enum LogLevels {
   silly = 'silly',
 }
 
-export interface UserSettings {
-  billLayoutColor1: string;
-  billLayoutColor2: string;
-  billLayoutColor3: string;
-  billLayoutTemplate: number;
-}
+export const EXPIRES_TIME = 60 * 60;
+export const SALTORROUNDS = 10;

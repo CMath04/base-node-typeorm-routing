@@ -13,7 +13,7 @@ const options: LoggerOptions = {
   level: LOG_LEVEL,
   format: combine(errors({ stack: true }), timestamp()),
   transports: [
-    new transports.File({ filename: DATA_DIR + '/logs/server.log', maxsize: 10000, format: customFormat }),
+    new transports.File({ filename: DATA_DIR + '/logs/server.log', maxsize: 10000000, format: customFormat }),
     new transports.Console({ format: combine(customFormat, colorize({ all: true })) }),
   ],
 };
@@ -34,8 +34,12 @@ export class TypeOrmLogger implements Logger {
   }
 
   logQueryError(error: string, query: string, parameters?: any[], queryRunner?: QueryRunner): any {
-    logger.error(error);
-    logger.error(query);
+    let message = error;
+    message += `\n\tWith query: ${query}`;
+    if (parameters && parameters.length > 0) {
+      message += `\n\tWith params: ${parameters}`;
+    }
+    logger.error(message);
   }
 
   logSchemaBuild(message: string, queryRunner?: QueryRunner): any {
