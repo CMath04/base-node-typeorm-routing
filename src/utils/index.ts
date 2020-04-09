@@ -1,6 +1,6 @@
 import { hash as bcHash } from 'bcrypt';
-import { SALTORROUNDS } from '../configurations';
+import { SALT_OR_ROUNDS } from '../configurations';
 
 export async function hash(str: string): Promise<string> {
-  return bcHash(str, SALTORROUNDS);
+  return bcHash(str, SALT_OR_ROUNDS);
 }

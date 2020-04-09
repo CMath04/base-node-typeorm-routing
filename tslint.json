@@ -43,6 +43,7 @@
     "await-promise": true,
     "no-async-without-await": true,
     "encoding": true,
-    "linebreak-style": [true, "LF"]
+    "linebreak-style": [true, "LF"],
+    "max-classes-per-file": false
   }
 }

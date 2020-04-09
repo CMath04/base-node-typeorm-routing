@@ -1,8 +1,11 @@
 import { ConnectionOptions, getConnectionManager, useContainer } from 'typeorm';
 import { Container } from 'typedi';
-import { logger, TypeOrmLogger } from './logger.config';
+import { CustomTypeOrmLogger, getLogger } from './logger.config';
 import * as EnvConfig from './env.config';
 import { DBTypes } from './constants.config';
+import * as entities from '../entities';
+
+const logger = getLogger(__filename);
 
 export async function connect() {
   try {
@@ -20,10 +23,10 @@ function getOptions(): ConnectionOptions {
   let options: ConnectionOptions = {
     type: EnvConfig.DB_TYPE,
     database: EnvConfig.DB_NAME,
-    entities: [__dirname + '/../entities/*.entity.js'],
+    entities: [...Object.values(entities)],
     synchronize: true,
     logging: 'all',
-    logger: new TypeOrmLogger(),
+    logger: new CustomTypeOrmLogger(),
   };
 
   if (EnvConfig.DB_TYPE !== DBTypes.sqlite) {

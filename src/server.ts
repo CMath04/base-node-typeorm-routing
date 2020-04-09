@@ -1,6 +1,8 @@
 import { install as installSourceMapSupport } from 'source-map-support';
 import 'reflect-metadata';
-import { connect as connectDb, DATA_DIR, logger, NODE_ENV, start as startHttpServer } from './configurations';
+import { connect as connectDb, DATA_DIR, getLogger, NODE_ENV, start as startHttpServer } from './configurations';
+
+const logger = getLogger(__filename);
 
 installSourceMapSupport();
 process.on('uncaughtException', err => {

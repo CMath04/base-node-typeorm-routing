@@ -1,36 +1,52 @@
-import { createLogger, format, LoggerOptions, transports } from 'winston';
-import { Logger, QueryRunner } from 'typeorm';
-import { DATA_DIR, LOG_LEVEL } from './env.config';
+import { createLogger, format, Logger as WinstonLogger, LoggerOptions, transports } from 'winston';
+import { Logger as TypeOrmLogger, QueryRunner } from 'typeorm';
+import { basename } from 'path';
+import { DATA_DIR, LOG_LEVEL, NODE_ENV } from './env.config';
+import { Env, INCLUDE_FILENAME, MAX_FILENAME_LENGTH } from './constants.config';
 
 const { combine, errors, timestamp, printf, colorize } = format;
 
-const customFormat = printf(info => {
-  const log = `${info.timestamp} [${info.level.toUpperCase()}] ${info.message}`;
-  return info.stack ? `${log}\n${info.stack}` : log;
-});
+export function getLogger(filePath: string): WinstonLogger {
+  let fileName = basename(filePath);
+  fileName = fileName.length > MAX_FILENAME_LENGTH ?
+    fileName.slice(MAX_FILENAME_LENGTH) :
+    fileName.padEnd(MAX_FILENAME_LENGTH, ' ');
 
-const options: LoggerOptions = {
-  level: LOG_LEVEL,
-  format: combine(errors({ stack: true }), timestamp()),
-  transports: [
-    new transports.File({ filename: DATA_DIR + '/logs/server.log', maxsize: 10000000, format: customFormat }),
-    new transports.Console({ format: combine(customFormat, colorize({ all: true })) }),
-  ],
-};
+  const customFormat = printf(info => {
+    const level = `[${info.level.toUpperCase()}]`.padEnd(9, ' ');
+    const source = INCLUDE_FILENAME ? fileName + ' ' : '';
+    const log = `${info.timestamp} ${source}${level}${info.message}`;
+    return info.stack ? `${log}\n${info.stack}` : log;
+  });
 
-export const logger = createLogger(options);
+  const options: LoggerOptions = {
+    level: LOG_LEVEL,
+    format: combine(errors({ stack: true }), timestamp()),
+  };
 
-export class TypeOrmLogger implements Logger {
+  if (NODE_ENV !== Env.test) {
+    options.transports = [
+      new transports.File({ filename: DATA_DIR + '/logs/server.log', maxsize: 10000000, format: customFormat }),
+      new transports.Console({ format: combine(customFormat, colorize({ all: true })) }),
+    ];
+  }
+
+  return createLogger(options);
+}
+
+export class CustomTypeOrmLogger implements TypeOrmLogger {
+  private logger = getLogger('TypeOrm');
+
   log(level: 'log' | 'info' | 'warn', message: any, queryRunner?: QueryRunner): any {
-    logger.log(level, message);
+    this.logger.log(level, message);
   }
 
   logQuery(query: string, parameters?: any[], queryRunner?: QueryRunner): any {
-    logger.debug(`Query: ${query}`);
+    this.logger.debug(`Query: ${query}`);
   }
 
   logQuerySlow(time: number, query: string, parameters?: any[], queryRunner?: QueryRunner): any {
-    logger.warn(`The query "${query}" executed slowly in ${time}ms`);
+    this.logger.warn(`The query "${query}" executed slowly in ${time}ms`);
   }
 
   logQueryError(error: string, query: string, parameters?: any[], queryRunner?: QueryRunner): any {
@@ -39,14 +55,14 @@ export class TypeOrmLogger implements Logger {
     if (parameters && parameters.length > 0) {
       message += `\n\tWith params: ${parameters}`;
     }
-    logger.error(message);
+    this.logger.error(message);
   }
 
   logSchemaBuild(message: string, queryRunner?: QueryRunner): any {
-    logger.info(message);
+    this.logger.info(message);
   }
 
   logMigration(message: string, queryRunner?: QueryRunner): any {
-    logger.info(message);
+    this.logger.info(message);
   }
 }

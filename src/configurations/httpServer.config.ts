@@ -1,10 +1,12 @@
 import { Action, createExpressServer, useContainer } from 'routing-controllers';
 import { Container } from 'typedi';
 import { Express, static as staticMw } from 'express';
-import { logger } from './logger.config';
+import { getLogger } from './logger.config';
 import { PORT } from './env.config';
-import { UserService } from '../services';
+import { SecurityService, UserService } from '../services';
 import { User } from '../entities';
+
+const logger = getLogger(__filename);
 
 export async function start() {
   try {
@@ -31,9 +33,9 @@ export async function start() {
 
 async function authorizationChecker(action: Action, roles: string[]): Promise<boolean> {
   const token = action.request.headers['authorization']?.split(' ')[1];
-  const userService = Container.get(UserService);
+  const securityService = Container.get(SecurityService);
   try {
-    await userService.verifyToken(token);
+    await securityService.verifyToken(token);
     return true;
   } catch (e) {
     return false;
@@ -43,8 +45,9 @@ async function authorizationChecker(action: Action, roles: string[]): Promise<bo
 async function currentUserChecker(action: Action): Promise<User> {
   const token = action.request.headers['authorization']?.split(' ')[1];
   const userService = Container.get(UserService);
+  const securityService = Container.get(SecurityService);
   try {
-    const decoded = await userService.verifyToken(token);
+    const decoded = await securityService.verifyToken(token);
     return await userService.getOne(decoded.id);
   } catch (e) {
     return undefined;

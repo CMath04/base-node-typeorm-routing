@@ -10,6 +10,7 @@ export enum DBTypes {
 
 export enum Env {
   dev = 'dev',
+  test = 'test',
   prod = 'prod',
 }
 
@@ -23,4 +24,6 @@ export enum LogLevels {
 }
 
 export const EXPIRES_TIME = 60 * 60;
-export const SALTORROUNDS = 10;
+export const SALT_OR_ROUNDS = 10;
+export const INCLUDE_FILENAME = false;
+export const MAX_FILENAME_LENGTH = 20;
