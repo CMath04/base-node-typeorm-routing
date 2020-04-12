@@ -32,23 +32,18 @@ export async function start() {
 }
 
 async function authorizationChecker(action: Action, roles: string[]): Promise<boolean> {
-  const token = action.request.headers['authorization']?.split(' ')[1];
-  const securityService = Container.get(SecurityService);
-  try {
-    await securityService.verifyToken(token);
-    return true;
-  } catch (e) {
-    return false;
-  }
+  const user = await currentUserChecker(action);
+  return !!user;
 }
 
 async function currentUserChecker(action: Action): Promise<User> {
-  const token = action.request.headers['authorization']?.split(' ')[1];
-  const userService = Container.get(UserService);
+  const token = action.request.headers['authorization']?.split('Bearer ')[1];
   const securityService = Container.get(SecurityService);
+  const userService = Container.get(UserService);
   try {
     const decoded = await securityService.verifyToken(token);
-    return await userService.getOne(decoded.id);
+    const user = await userService.getOne(decoded.id);
+    return !!user.token && user.token === token ? user : undefined;
   } catch (e) {
     return undefined;
   }

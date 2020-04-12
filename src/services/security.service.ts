@@ -1,13 +1,13 @@
 import { Service } from 'typedi';
 import * as jwt from 'jsonwebtoken';
-import { EXPIRES_TIME, JWT_SECRET } from '../configurations';
+import { JWT_SECRET } from '../configurations';
 import { TokenDecoded, TokenPayload } from '../typing';
 
 @Service()
 export class SecurityService {
   async generateToken(payload: TokenPayload): Promise<string> {
     return new Promise((resolve, reject) => {
-      jwt.sign(payload, JWT_SECRET, { algorithm: 'HS256', expiresIn: EXPIRES_TIME }, (err, token) => {
+      jwt.sign(payload, JWT_SECRET, { algorithm: 'HS256' }, (err, token) => {
         if (err) {
           reject(err);
         } else {

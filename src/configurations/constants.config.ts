@@ -23,7 +23,6 @@ export enum LogLevels {
   silly = 'silly',
 }
 
-export const EXPIRES_TIME = 60 * 60;
 export const SALT_OR_ROUNDS = 10;
 export const INCLUDE_FILENAME = false;
 export const MAX_FILENAME_LENGTH = 20;

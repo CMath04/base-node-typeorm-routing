@@ -9,7 +9,7 @@ const { combine, errors, timestamp, printf, colorize } = format;
 export function getLogger(filePath: string): WinstonLogger {
   let fileName = basename(filePath);
   fileName = fileName.length > MAX_FILENAME_LENGTH ?
-    fileName.slice(MAX_FILENAME_LENGTH) :
+    fileName.slice(0, MAX_FILENAME_LENGTH) :
     fileName.padEnd(MAX_FILENAME_LENGTH, ' ');
 
   const customFormat = printf(info => {

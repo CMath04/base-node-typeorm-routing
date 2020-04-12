@@ -1,12 +1,11 @@
-import { Body, CurrentUser, Get, JsonController, Post } from 'routing-controllers';
+import { Body, CurrentUser, Delete, Get, JsonController, Post } from 'routing-controllers';
 import { Inject } from 'typedi';
 import { compare } from 'bcrypt';
 import { getLogger } from '../configurations';
-import { UserService } from '../services';
+import { SecurityService, UserService } from '../services';
 import { User } from '../entities';
 import { EmailExistError, WrongCredentials } from './HttpErrors';
 import { LoginCredentials } from '../typing';
-import { SecurityService } from '../services/security.service';
 
 @JsonController('/auth')
 export class AuthController {
@@ -24,13 +23,14 @@ export class AuthController {
     if (await this.userService.getOneByEmail(newUser.email)) {
       throw new EmailExistError();
     }
-
     const user = await this.userService.save(newUser);
-    this.logger.info(`User created with ID ${user.id}`);
-    return this.securityService.generateToken({
+    const token = await this.securityService.generateToken({
       id: user.id,
       email: user.email,
     });
+    await this.userService.updateToken(user.id, token);
+    this.logger.info(`User created with ID ${user.id}`);
+    return { accessToken: token };
   }
 
   @Post('/login')
@@ -39,10 +39,22 @@ export class AuthController {
     if (!user || !await compare(credentials.password, user.password)) {
       throw new WrongCredentials();
     }
-    return this.securityService.generateToken({
-      id: user.id,
-      email: user.email,
-    });
+    if (user.token) {
+      return { accessToken: user.token };
+    } else {
+      const token = await this.securityService.generateToken({
+        id: user.id,
+        email: user.email,
+      });
+      await this.userService.updateToken(user.id, token);
+      return { accessToken: token };
+    }
+  }
+
+  @Delete('/logout')
+  async logout(@CurrentUser({ required: true }) user: User) {
+    await this.userService.deleteToken(user.id);
+    return { message: 'logged out' };
   }
 
   @Get('/me')

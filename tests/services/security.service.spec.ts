@@ -16,7 +16,7 @@ describe('Token verification', () => {
     const decoded = await securityService.verifyToken(token);
 
     expect(token).toMatch(JWT_REGEX);
-    expect(Object.keys(decoded).sort()).toEqual(['id', 'email', 'iat', 'exp'].sort());
+    expect(Object.keys(decoded).sort()).toEqual(['id', 'email', 'iat'].sort());
     expect(decoded).toMatchObject(payload);
   });
 
@@ -24,11 +24,5 @@ describe('Token verification', () => {
     const aMalFormedToken = 'a malformed token';
 
     expect(securityService.verifyToken(aMalFormedToken)).rejects.toThrow(new JsonWebTokenError('jwt malformed'));
-  });
-
-  it('should throw error on outdated token', () => {
-    const anOutDatedToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJjaGF1c3NpZXIubWF0aGlldUBnbWFpbC5jb20iLCJpYXQiOjE1ODY1Mzg2MzcsImV4cCI6MTU4NjU0MjIzN30.RknpcNvrPfjEOhkdEsGBnmvixHT3KWJMGyVk2SzHmDc';
-
-    expect(securityService.verifyToken(anOutDatedToken)).rejects.toThrow(new JsonWebTokenError('jwt expired'));
   });
 });

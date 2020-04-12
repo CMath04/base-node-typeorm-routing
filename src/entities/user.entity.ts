@@ -32,6 +32,9 @@ export class User {
   @MinLength(8)
   password: string;
 
+  @Column({ nullable: true })
+  token: string;
+
   @CreateDateColumn()
   createdDate: Date;
 
